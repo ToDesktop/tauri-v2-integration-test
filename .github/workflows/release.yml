@@ -6,19 +6,29 @@ on:
 jobs:
   release:
     strategy:
+      fail-fast: false   # one platform failing doesn't cancel the others' uploads
       matrix:
         include:
           - os: macos-15
-            args: --bundles app --target aarch64-apple-darwin
+            target: aarch64-apple-darwin
+            args: --bundles app
+          - os: macos-15
+            target: x86_64-apple-darwin
+            args: --bundles app
           - os: windows-latest
+            target: x86_64-pc-windows-msvc
             args: --no-bundle
             out: dist/windows-x64
             exe: .exe
-            triple: x86_64-pc-windows-msvc
+          - os: windows-latest   # cross-compiled for Windows on Arm
+            target: aarch64-pc-windows-msvc
+            args: --no-bundle
+            out: dist/windows-arm64
+            exe: .exe
           - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
             args: --no-bundle
             out: dist/linux-x64
-            triple: x86_64-unknown-linux-gnu
     runs-on: ${{ matrix.os }}
     permissions:
       id-token: write   # lets ToDesktop check the job is yours
@@ -30,20 +40,20 @@ jobs:
           node-version: 24
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-apple-darwin
+          targets: ${{ matrix.target }}
       - if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev
       - run: npm ci
       # Unsigned: leave APPLE_SIGNING_IDENTITY unset, ToDesktop signs it.
-      - run: npx tauri build ${{ matrix.args }}
+      - run: npx tauri build ${{ matrix.args }} --target ${{ matrix.target }}
       # Windows and Linux: gather the app, and the updater from
       # src-tauri/binaries, into one folder.
       - if: matrix.out
         shell: bash
         run: |
           mkdir -p ${{ matrix.out }}
-          cp src-tauri/target/release/todesktop-builder-migration${{ matrix.exe }} ${{ matrix.out }}/
-          cp src-tauri/binaries/todesktop-updater-${{ matrix.triple }}${{ matrix.exe }} \
+          cp src-tauri/target/${{ matrix.target }}/release/todesktop-builder-migration${{ matrix.exe }} ${{ matrix.out }}/
+          cp src-tauri/binaries/todesktop-updater-${{ matrix.target }}${{ matrix.exe }} \
             ${{ matrix.out }}/todesktop-updater${{ matrix.exe }}
       - id: version   # package.json's, for runs without a tag
         shell: bash

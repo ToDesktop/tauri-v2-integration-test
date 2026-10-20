@@ -10,13 +10,14 @@ export default defineConfig({
     // What tauri build --bundles app makes, unsigned: ToDesktop signs it.
     apps: {
       arm64: 'src-tauri/target/aarch64-apple-darwin/release/bundle/macos/ToDesktop Builder Migration.app',
+      x64: 'src-tauri/target/x86_64-apple-darwin/release/bundle/macos/ToDesktop Builder Migration.app',
     },
     formats: ['dmg'],
   },
   // Preview: Tauri makes no app folder here, so the workflow gathers your
   // binary and the updater, without bundle.resources.
   windows: {
-    apps: { x64: 'dist/windows-x64' },
+    apps: { x64: 'dist/windows-x64', arm64: 'dist/windows-arm64' },
     executable: 'todesktop-builder-migration.exe', // your Cargo package name
   },
   linux: {
