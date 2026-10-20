@@ -6,8 +6,13 @@ export default defineConfig({
   description: 'What your app does',
   maintainer: 'Your Company <support@example.com>',
   // The version is the workflow's: a tag (v1.2.3), else package.json's.
-  // mac: left out until the app has a Developer ID and notarization key
-  // in Account › Signing (a Mac build fails without them).
+  mac: {
+    // What tauri build --bundles app makes, unsigned: ToDesktop signs it.
+    apps: {
+      arm64: 'src-tauri/target/aarch64-apple-darwin/release/bundle/macos/ToDesktop Builder Migration.app',
+    },
+    formats: ['dmg'],
+  },
   // Preview: Tauri makes no app folder here, so the workflow gathers your
   // binary and the updater, without bundle.resources.
   windows: {

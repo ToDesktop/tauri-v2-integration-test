@@ -8,6 +8,8 @@ jobs:
     strategy:
       matrix:
         include:
+          - os: macos-15
+            args: --bundles app --target aarch64-apple-darwin
           - os: windows-latest
             args: --no-bundle
             out: dist/windows-x64
