@@ -1,0 +1,55 @@
+name: Release
+on:
+  push:   # the refs step 3 trusts
+    tags: ["v*"]
+  workflow_dispatch:
+jobs:
+  release:
+    strategy:
+      matrix:
+        include:
+          - os: macos-15
+            args: --bundles app --target aarch64-apple-darwin
+          - os: windows-latest
+            args: --no-bundle
+            out: dist/windows-x64
+            exe: .exe
+            triple: x86_64-pc-windows-msvc
+          - os: ubuntu-22.04
+            args: --no-bundle
+            out: dist/linux-x64
+            triple: x86_64-unknown-linux-gnu
+    runs-on: ${{ matrix.os }}
+    permissions:
+      id-token: write   # lets ToDesktop check the job is yours
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev
+      - run: npm ci
+      # Unsigned: leave APPLE_SIGNING_IDENTITY unset, ToDesktop signs it.
+      - run: npx tauri build ${{ matrix.args }}
+      # Windows and Linux: gather the app, and the updater from
+      # src-tauri/binaries, into one folder.
+      - if: matrix.out
+        shell: bash
+        run: |
+          mkdir -p ${{ matrix.out }}
+          cp src-tauri/target/release/todesktop-builder-migration${{ matrix.exe }} ${{ matrix.out }}/
+          cp src-tauri/binaries/todesktop-updater-${{ matrix.triple }}${{ matrix.exe }} \
+            ${{ matrix.out }}/todesktop-updater${{ matrix.exe }}
+      - id: version   # package.json's, for runs without a tag
+        shell: bash
+        run: echo "version=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+      - uses: ToDesktop/upload-action@v1   # sends the built app
+        with:
+          # A tag (v1.2.3) names the version; other runs use
+          # package.json's, as branch names aren't versions.
+          version: ${{ github.ref_type == 'tag' && github.ref_name || steps.version.outputs.version }}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDesktop Builder Migration</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>ToDesktop Builder Migration</h1>
+      <p>A Tauri v2 app that updates through ToDesktop.</p>
+
+      <dl class="info">
+        <dt>Version</dt>
+        <dd id="version">…</dd>
+        <dt>Build</dt>
+        <dd id="build">…</dd>
+        <dt>Install kind</dt>
+        <dd id="install-kind">…</dd>
+        <dt>Channel</dt>
+        <dd id="channel">…</dd>
+        <dt>Update state</dt>
+        <dd id="state">…</dd>
+      </dl>
+
+      <div class="row">
+        <button id="check" type="button">Check for updates</button>
+        <button id="download" type="button" hidden>Download</button>
+        <button id="restart" type="button" hidden>Restart to update</button>
+      </div>
+      <p id="message"></p>
+    </main>
+  </body>
+</html>
