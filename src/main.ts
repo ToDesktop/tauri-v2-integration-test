@@ -1,4 +1,5 @@
-import { health, install, updates, type UpdateState } from "@todesktop/tauri";
+import { invoke } from "@tauri-apps/api/core";
+import { install, updates, type UpdateState } from "@todesktop/tauri";
 
 const $ = (id: string) => document.getElementById(id)!;
 
@@ -62,7 +63,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   await run(async () => {
     render(await updates.state());
     await updates.subscribe(render);
-    // This launch works: rollout health counts on it.
-    await health.ready();
+    // This launch works: rollout health and smoke tests count on it.
+    // health.ready(), through src-tauri/src/lib.rs for now.
+    await invoke("health_ready");
   });
 });
