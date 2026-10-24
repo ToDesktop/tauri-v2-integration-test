@@ -3932,11 +3932,12 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-todesktop"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f3293fca57fef1cdca34248a60c43a8af71df65e7b20aba18e7f24ae2d04601"
+checksum = "1eb3c72fbb3a83ebfc1f4c9b12d7157d26aeb5a255fdb67d2b79ab095a64cdf5"
 dependencies = [
  "serde",
+ "serde_json",
  "tauri",
  "tauri-plugin",
  "todesktop-updater",
@@ -4152,7 +4153,7 @@ checksum = "fd3ca314f692efd6c868f8408f53fe444634a845f96c028b97d35f6a1f79f0ee"
 
 [[package]]
 name = "todesktop-builder-migration"
-version = "1.0.5"
+version = "1.0.6"
 dependencies = [
  "serde",
  "serde_json",
@@ -4164,9 +4165,9 @@ dependencies = [
 
 [[package]]
 name = "todesktop-updater"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24a9b7d4c85664d79d1b9a961c1273bca1ee870c2125b6abc45ca2abfd610a35"
+checksum = "b0b665914d74edeb01d84e7fd588e347a2dd6255f0f7475a56c9bf13ef76e113"
 dependencies = [
  "base64 0.22.1",
  "ed25519-dalek",
