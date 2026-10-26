@@ -16,14 +16,18 @@ export default defineConfig({
   },
   // tauri build --no-bundle --target leaves the binary here; the preset
   // makes the app folder from it, with the updater and bundle.resources.
+  // No icons yet: CI uploads don't carry the files, so the builders can't
+  // find what tauriConfig() names.
   windows: {
     apps: {
       x64: 'src-tauri/target/x86_64-pc-windows-msvc/release',
       arm64: 'src-tauri/target/aarch64-pc-windows-msvc/release',
     },
+    icon: undefined,
   },
   linux: {
     apps: { x64: 'src-tauri/target/x86_64-unknown-linux-gnu/release' },
     formats: ['deb', 'tar.gz'],
+    icon: undefined,
   },
 });
