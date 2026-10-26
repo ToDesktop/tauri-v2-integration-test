@@ -18,17 +18,12 @@ jobs:
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             args: --no-bundle
-            out: dist/windows-x64
-            exe: .exe
           - os: windows-latest   # cross-compiled for Windows on Arm
             target: aarch64-pc-windows-msvc
             args: --no-bundle
-            out: dist/windows-arm64
-            exe: .exe
           - os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
             args: --no-bundle
-            out: dist/linux-x64
     runs-on: ${{ matrix.os }}
     permissions:
       id-token: write   # lets ToDesktop check the job is yours
@@ -46,15 +41,6 @@ jobs:
       - run: npm ci
       # Unsigned: leave APPLE_SIGNING_IDENTITY unset, ToDesktop signs it.
       - run: npx tauri build ${{ matrix.args }} --target ${{ matrix.target }}
-      # Windows and Linux: gather the app, and the updater from
-      # src-tauri/binaries, into one folder.
-      - if: matrix.out
-        shell: bash
-        run: |
-          mkdir -p ${{ matrix.out }}
-          cp src-tauri/target/${{ matrix.target }}/release/todesktop-builder-migration${{ matrix.exe }} ${{ matrix.out }}/
-          cp src-tauri/binaries/todesktop-updater-${{ matrix.target }}${{ matrix.exe }} \
-            ${{ matrix.out }}/todesktop-updater${{ matrix.exe }}
       - id: version   # package.json's, for runs without a tag
         shell: bash
         run: echo "version=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"

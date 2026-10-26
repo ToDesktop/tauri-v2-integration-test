@@ -1,8 +1,8 @@
 [package]
 name = "todesktop-builder-migration"
 version = "1.0.6"
-description = "A Tauri App"
-authors = ["you"]
+description = "What your app does"
+authors = ["Your Company <support@example.com>"]
 edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
