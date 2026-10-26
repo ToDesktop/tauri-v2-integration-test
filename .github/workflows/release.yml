@@ -44,7 +44,9 @@ jobs:
       - id: version   # package.json's, for runs without a tag
         shell: bash
         run: echo "version=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
-      - uses: ToDesktop/upload-action@v1   # sends the built app
+      # Sends the built app. 1.1.0 is the first with tauriConfig(); back to
+      # @v1 once v1 moves to it.
+      - uses: ToDesktop/upload-action@v1.1.0
         with:
           # A tag (v1.2.3) names the version; other runs use
           # package.json's, as branch names aren't versions.
